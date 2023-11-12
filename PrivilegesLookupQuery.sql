@@ -130,6 +130,28 @@ WITH
             DicConfigurationSecurityLevels d ON CSC_LevelID = d.TypeID
         WHERE
             CSC_IsGlobal = 1
+
+        UNION ALL
+
+        SELECT
+            'Global' As Scope,
+            d.Name,
+            NULL,
+            u.COS_UserBpsID,
+            u.UserName,
+            u.COS_GroupBpsID,
+            u.GroupName,
+            NULL As APP_Name,
+            NULL As DEF_Name,
+            NULL As WF_Name,
+            NULL As DTYPE_Name,
+            NULL As COM_Name
+        FROM
+            WFSecurities JOIN
+            UsersAndUsersInGroups u ON (u.COS_UserBpsID = SEC_USERGUID AND u.COS_GroupBpsID IS NULL) OR u.COS_GroupBpsID = SEC_USERGUID JOIN
+            DicSecurityLevels d ON SEC_LevelID = d.TypeID
+        WHERE
+            SEC_IsGlobal = 1
     ),
     AllSecurities AS (
         SELECT * FROM UserWorkflowsForms
@@ -163,3 +185,4 @@ WHERE
     COM_Name LIKE '' OR
     Level LIKE '' OR
     Scope LIKE ''
+
