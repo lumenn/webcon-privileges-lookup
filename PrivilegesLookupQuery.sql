@@ -76,13 +76,13 @@ WITH
             DEF_Name,
             NULL As WF_Name,
             NULL As DTYPE_Name,
-            COM_Name
+            IIF(COM_Name IS NULL, 'General', COM_Name) AS COM_Name
         FROM
             WFDefinitions JOIN
             WFSecurities c ON DEF_ID = SEC_DEFID JOIN
             UsersAndUsersInGroups u ON (u.COS_UserBpsID = SEC_USERGUID AND u.COS_GroupBpsID IS NULL) OR u.COS_GroupBpsID = SEC_USERGUID JOIN
             DicSecurityLevels d ON SEC_LevelID = d.TypeID JOIN
-            WFApplications ON DEF_APPID = APP_ID JOIN
+            WFApplications ON DEF_APPID = APP_ID LEFT OUTER JOIN
             Companies ON COM_ID = SEC_COMID
     ),
     UserWorkflowsForms (Scope, Level, ID, UserID, UserName, GroupID, GroupName, APP_Name, DEF_Name, WF_Name, DTYPE_Name, COM_Name) AS (
@@ -98,7 +98,7 @@ WITH
             DEF_Name,
             WF_Name,
             DTYPE_Name,
-            COM_Name
+            IIF(COM_Name IS NULL, 'General', COM_Name) AS COM_Name
         FROM
             WorkFlows JOIN
             DocTypeAssocciations ON WF_ID = ASS_WFID JOIN
@@ -107,7 +107,7 @@ WITH
             UsersAndUsersInGroups u ON (u.COS_UserBpsID = SEC_USERGUID AND u.COS_GroupBpsID IS NULL) OR u.COS_GroupBpsID = SEC_USERGUID JOIN
             DicSecurityLevels d ON SEC_LevelID = d.TypeID JOIN
             WFDefinitions ON DEF_ID = WF_WFDEFID JOIN
-            WFApplications ON APP_ID = DEF_APPID JOIN
+            WFApplications ON APP_ID = DEF_APPID LEFT OUTER JOIN
             Companies ON SEC_COMID = COM_ID
     ),
     GlobalPrivileges (Scope, Level, ID, UserID, UserName, GroupID, GroupName, APP_Name, DEF_Name, WF_Name, DTYPE_Name, COM_Name) AS (
