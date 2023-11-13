@@ -10,7 +10,9 @@ WITH
         FROM
             CacheOrganizationStructure 
         WHERE
-            COS_UserType IS NOT NULL
+            COS_AccountType IN (
+                1 -- AAD User
+            )
     ), 
     Groups (COS_ID, COS_DisplayName, COS_BpsID) AS (
         SELECT
@@ -20,7 +22,10 @@ WITH
         FROM
             CacheOrganizationStructure 
         WHERE
-            COS_UserType IS NULL
+            COS_AccountType IN (
+                4, -- BPS Group
+                2 -- AAD Group
+            )
     ),
     UsersAndUsersInGroups (COS_UserBpsID, COS_GroupBpsID, UserName, GroupName) AS (
         SELECT
